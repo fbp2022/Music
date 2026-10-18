@@ -1,7 +1,8 @@
 import { useDeferredValue, useMemo, useState } from "react";
 import { Check, ListPlus, MoreHorizontal, Search, X } from "lucide-react";
 import { CoverArt } from "../../components/CoverArt";
-import { albums, songs, stations } from "../../data/demo";
+import { albums, songs } from "../../data/demo";
+import { RADIO_FALLBACK_ART } from "../../services/radioBrowser";
 import { useMusic } from "../../state/MusicProvider";
 
 type Filter = "all" | "songs" | "albums" | "artists" | "radio";
@@ -18,7 +19,7 @@ export function SearchPage() {
   const [filter, setFilter] = useState<Filter>("all");
   const [optionsSongId, setOptionsSongId] = useState<string | null>(null);
   const [queueNotice, setQueueNotice] = useState("");
-  const { playSong, playStation, goTo, playNext, playLater, canUndoQueue, undoQueue } = useMusic();
+  const { playSong, playStation, goTo, playNext, playLater, canUndoQueue, undoQueue, radioStations, favoriteStationRecords } = useMusic();
   const needle = useDeferredValue(query.trim().toLocaleLowerCase());
   const results = useMemo(() => {
     const sorted = <T extends { title?: string; name?: string }>(entries: T[]) => [...entries].sort((a, b) => {
@@ -31,9 +32,10 @@ export function SearchPage() {
       songs: sorted(songs.filter((song) => contains(song.title, song.artist, song.album, song.genre, String(song.year)))),
       albums: sorted(albums.filter((album) => contains(album.title, album.artist, String(album.year)))),
       artists: [...new Set(songs.map((song) => song.artist))].filter((artist) => contains(artist)).sort(),
-      radio: sorted(stations.filter((station) => contains(station.name, station.genre, station.description))),
+      radio: sorted([...new Map([...radioStations, ...favoriteStationRecords].map((s) => [s.id, s])).values()]
+        .filter((station) => contains(station.name, station.genre, station.description))),
     };
-  }, [needle]);
+  }, [needle, radioStations, favoriteStationRecords]);
 
   const include = (tab: Filter) => filter === "all" || filter === tab;
   const queueAction = (id: string, kind: "next" | "later") => {
@@ -58,7 +60,7 @@ export function SearchPage() {
           <div className="search-browse">
             {[{ label: "Artists", image: albums[2].cover, tab: "library" },
               { label: "Albums", image: albums[0].cover, tab: "library" },
-              { label: "Radio Stations", image: stations[0].cover, tab: "radio" },
+              { label: "Radio Stations", image: RADIO_FALLBACK_ART, tab: "radio" },
               { label: "Get Music", image: albums[4].cover, tab: "get-music" }].map((item) =>
               <button type="button" key={item.label} className="browse-tile"
                 onClick={() => goTo(item.tab as "library" | "radio" | "get-music")}>
@@ -127,11 +129,16 @@ export function SearchPage() {
           {include("radio") && results.radio.length > 0 && <section className="page-section">
             <h2>Radio <span className="result-count">{results.radio.length}</span></h2>
             <div className="library-list">{results.radio.map((station) =>
-              <button type="button" className="music-list-row__main search-result" key={station.id} onClick={() => playStation(station.id)}>
+              <button type="button" className="music-list-row__main search-result" key={station.id} onClick={() => playStation(station)}>
                 <CoverArt src={station.cover} alt=""/>
                 <span><strong>{station.name}</strong><small>{station.description}</small></span>
               </button>)}</div>
           </section>}
+          {include("radio") && needle && (
+            <button type="button" className="radio-load-more" onClick={() => goTo("radio")}>
+              Browse worldwide radio directory
+            </button>
+          )}
           {(!include("songs") || !results.songs.length) &&
            (!include("albums") || !results.albums.length) &&
            (!include("artists") || !results.artists.length) &&
