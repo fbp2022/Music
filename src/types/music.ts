@@ -25,10 +25,17 @@ export interface Album {
 export interface Station {
   id: string;
   name: string;
-  genre: "Christian" | "Worship" | "Gospel" | "Talk" | "Other";
+  genre: string;
   description: string;
   cover: string;
   website: string;
+  streamUrl: string;
+  country?: string;
+  language?: string;
+  codec?: string;
+  bitrate?: number;
+  tags?: string[];
+  source?: "radio-browser" | "custom";
 }
 
 export interface Store {
