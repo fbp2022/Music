@@ -1,6 +1,6 @@
 # Family Music
 
-An iPhone-first, installable family music web app. The design follows familiar Apple Music navigation while keeping personal profiles, radio, music purchases, and library organization distinct.
+An iPhone-first family music web app, being developed as an installable PWA. The design follows familiar Apple Music navigation while keeping personal profiles, radio, music purchases, and library organization distinct.
 
 ## Project status
 
@@ -10,16 +10,16 @@ An iPhone-first, installable family music web app. The design follows familiar A
 
 Requirements: Node.js 20.19+ or 22.12+.
 
-\`\`\`bash
+```bash
 npm install
 npm run dev
-\`\`\`
+```
 
-Open the URL Vite shows (normally http://localhost:5173). For a production build run \`npm run build\`.
+Open the URL Vite shows (normally http://localhost:5173). For a production build run `npm run build`.
 
 ## Project structure
 
-\`\`\`
+```
 src/
   app/            App shell and app entry
   components/     Shared UI (artwork, navigation, mini player)
@@ -36,7 +36,7 @@ src/
   state/          Shared UI state and demo preferences
   styles/         Design tokens, layout, components and responsive CSS
   types/          Shared TypeScript contracts
-\`\`\`
+```
 
 ## Requirements retained
 
@@ -50,7 +50,7 @@ src/
 ## Integration plan
 
 1. Deploy Navidrome on the selected infrastructure and secure an HTTPS same-origin route for its API.
-2. Implement Subsonic/OpenSubsonic integration in \`src/services/navidrome.ts\`. Do not embed administrator credentials or long-lived secrets in a public frontend bundle.
+2. Implement Subsonic/OpenSubsonic integration in `src/services/navidrome.ts`. Do not embed administrator credentials or long-lived secrets in a public frontend bundle.
 3. Replace sample data with per-user authenticated library data and persist account-specific preferences server-side.
 4. Add a separately secured upload/import service on the same infrastructure to validate audio and archives, check duplicates, preserve provenance, and update the Navidrome music directory.
 5. Implement real HTMLAudioElement playback, Media Session API, queue persistence and network recovery. Test iOS lock-screen audio, backgrounding, memory pressure and AirPlay on real devices.
