@@ -15,7 +15,37 @@
     </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <main id="boot-status" style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#101218;color:#f8f8fa;min-height:100dvh;padding:max(72px,env(safe-area-inset-top)) 25px 32px;">
+        <h1 style="font-size:28px;margin:0 0 12px;">Family Music</h1>
+        <p style="color:#b7bdc8;line-height:1.5;">Loading the music library…</p>
+        <p style="color:#9fa6b3;font-size:13px;">If this stays on screen, use the refresh button in Safari.</p>
+      </main>
+    </div>
+    <script>
+      (function () {
+        function showFailure(detail) {
+          var node = document.getElementById('boot-status');
+          if (!node) return;
+          var message = node.querySelector('p');
+          if (message) message.textContent = 'The application could not start. Try refreshing this page.';
+          var details = document.getElementById('boot-details');
+          if (!details) {
+            details = document.createElement('pre');
+            details.id = 'boot-details';
+            details.style.cssText = 'white-space:pre-wrap;overflow-wrap:anywhere;color:#f19bab;font-size:12px;margin-top:20px';
+            node.appendChild(details);
+          }
+          details.textContent = String(detail || 'Unknown loading error').slice(0, 500);
+        }
+        window.addEventListener('error', function (event) {
+          showFailure(event.message || (event.target && event.target.src) || 'Script failed to load');
+        }, true);
+        window.addEventListener('unhandledrejection', function (event) {
+          showFailure(event.reason && (event.reason.message || String(event.reason)));
+        });
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
