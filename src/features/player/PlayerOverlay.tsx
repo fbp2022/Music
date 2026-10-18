@@ -6,7 +6,7 @@ import { timeLabel } from "../../utils/time";
 
 export function PlayerOverlay() {
   const { playerOpen, setPlayerOpen, song, station, playing, togglePlayback, next, previous,
-    queue, favoriteSongs, toggleFavoriteSong, moveInQueue, clearUpNext, canUndoQueue,
+    queue, favoriteSongs, favoriteStations, toggleFavoriteSong, toggleFavoriteStation, playbackError, moveInQueue, clearUpNext, canUndoQueue,
     undoQueue, playSong } = useMusic();
   if (!playerOpen) return null;
 
@@ -34,17 +34,25 @@ export function PlayerOverlay() {
             onClick={() => toggleFavoriteSong(song.id)} aria-label="Toggle favorite">
             <Heart size={25} fill={favoriteSongs.includes(song.id) ? "currentColor" : "none"}/>
           </button>}
+          {station && <button type="button" className={"icon-button heart-button" + (favoriteStations.includes(station.id) ? " selected" : "")}
+            onClick={() => toggleFavoriteStation(station.id)} aria-label="Favorite radio station">
+            <Heart size={25} fill={favoriteStations.includes(station.id) ? "currentColor" : "none"}/>
+          </button>}
         </div>
         <div className="progress-placeholder"><span /></div>
         <div className="progress-label"><span>0:00</span><span>{song ? timeLabel(song.duration) : "LIVE"}</span></div>
         <div className="player-actions">
           <button type="button" onClick={previous} disabled={!song} aria-label="Previous track"><SkipBack size={32} fill="currentColor"/></button>
-          <button type="button" className="player-actions__main" onClick={togglePlayback} aria-label={playing ? "Pause UI preview" : "Play UI preview"}>
+          <button type="button" className="player-actions__main" onClick={togglePlayback} aria-label={playing ? "Pause" : "Play"}>
             {playing ? <Pause size={30} fill="currentColor"/> : <Play size={30} fill="currentColor"/>}
           </button>
           <button type="button" onClick={next} disabled={!song} aria-label="Next track"><SkipForward size={32} fill="currentColor"/></button>
         </div>
-        <div className="prototype-message">Audio preview controls only — Navidrome streaming is not connected yet.</div>
+        {station ? (
+          <div className="prototype-message" role={playbackError ? "alert" : "status"}>
+            {playbackError || (playing ? "Streaming live radio" : "Station selected — tap Play to listen")}
+          </div>
+        ) : <div className="prototype-message">Sample music only — Navidrome has not been connected yet.</div>}
         {song && (
           <section className="up-next">
             <div className="up-next-header">
