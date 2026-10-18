@@ -126,3 +126,7 @@
   .queue-reorder .icon-button { width: 27px; }
   .search-track-actions button { padding-inline: 8px; }
 }
+
+.library-reorder { display: inline-flex; gap: 1px; flex: 0 0 auto; }
+.library-reorder .icon-button { width: 38px; height: 38px; color: var(--muted); }
+.library-reorder .icon-button:disabled { opacity: .25; }
