@@ -1,5 +1,9 @@
 * { box-sizing: border-box; }
 html { min-height: 100%; background: var(--page); }
+/* Respect iPhone safe areas while retaining the native-style bottom navigation. */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .page-scroll { padding-top: env(safe-area-inset-top); }
+}
 body { margin: 0; background: var(--page); color: var(--text); font-family: inherit; -webkit-font-smoothing: antialiased; }
 button, input, select { font: inherit; }
 button { border: 0; cursor: pointer; }
