@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BottomNav } from "../components/BottomNav";
 import { MiniPlayer } from "../components/MiniPlayer";
 import { HomePage } from "../features/home/HomePage";
@@ -13,6 +13,12 @@ import { MusicProvider, useMusic } from "../state/MusicProvider";
 function MusicAppShell() {
   const { tab } = useMusic();
   const [settingsOpen, setSettingsOpen] = useState(false);
+
+  useEffect(() => {
+    // Bottom navigation should always take users to the destination they selected.
+    setSettingsOpen(false);
+  }, [tab]);
+
   return (
     <div className="app-shell">
       <div className="prototype-ribbon">INTERACTIVE UI PREVIEW · NOT CONNECTED TO A MUSIC SERVER</div>
