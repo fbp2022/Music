@@ -4,7 +4,7 @@ import { albums, songs, stations } from "../../data/demo";
 import { useMusic } from "../../state/MusicProvider";
 
 export function HomePage({ onOpenSettings }: { onOpenSettings: () => void }) {
-  const { goTo, playSong, playStation, favoriteSongs, toggleFavoriteSong } = useMusic();
+  const { goTo, playSong, playStation, favoriteSongs } = useMusic();
   const featured = songs[0];
   return (
     <div className="page">
@@ -34,7 +34,7 @@ export function HomePage({ onOpenSettings }: { onOpenSettings: () => void }) {
       <section className="page-section">
         <div className="section-title"><h2>Made for You</h2><button type="button" onClick={() => goTo("library")}>See All <ChevronRight size={16}/></button></div>
         <div className="quick-grid">
-          <button type="button" className="quick-tile quick-tile--favorite" onClick={() => { toggleFavoriteSong(featured.id); goTo("library"); }}>
+          <button type="button" className="quick-tile quick-tile--favorite" onClick={() => goTo("library")}>
             <Heart size={28} fill="currentColor"/><strong>Favorites</strong><small>{favoriteSongs.length} saved songs</small>
           </button>
           <button type="button" className="quick-tile quick-tile--recent" onClick={() => goTo("library")}>
