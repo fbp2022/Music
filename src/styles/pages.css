@@ -98,3 +98,31 @@
 .queue-row__title span { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .queue-row__title strong { font-size: .8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .queue-row__title small { color: var(--muted); }
+
+
+/* Familiar library/search interface with richer, predictable actions. */
+.search-filters { margin-top: 15px; margin-bottom: 4px; }
+.search-filters .pill { padding: 8px 14px; }
+.result-count { color: var(--muted); font-size: .82rem; font-weight: 500; margin-left: 4px; }
+.search-track { position: relative; flex-wrap: wrap; }
+.search-track > .icon-button { flex: 0 0 38px; }
+.search-track-actions { display: flex; flex-basis: 100%; justify-content: flex-end; align-items: center; gap: 8px; padding: 0 0 12px; }
+.search-track-actions button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-high); color: var(--text); min-height: 38px; padding: 8px 12px; font-size: .77rem; font-weight: 600; }
+.queue-notice { display: flex; align-items: center; gap: 8px; padding: 10px 12px; margin-top: 12px; background: var(--surface-high); border: 1px solid var(--border); border-radius: 9px; font-size: .78rem; }
+.queue-notice span { flex: 1; }
+.queue-notice > button { display: inline-flex; align-items: center; background: transparent; color: var(--accent); padding: 3px; font-size: .8rem; font-weight: 650; }
+.queue-notice > button:last-child { color: var(--muted); }
+.up-next-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.up-next-header h3 { margin: 0; }
+.up-next-header h3 small { color: var(--muted); font-weight: 500; }
+.queue-tools { display: flex; align-items: center; gap: 10px; }
+.queue-tools button { display: inline-flex; align-items: center; gap: 4px; background: transparent; color: var(--accent); padding: 5px 2px; font-size: .76rem; font-weight: 600; }
+.queue-reorder { display: flex; flex: 0 0 auto; align-items: center; }
+.queue-reorder .icon-button { width: 32px; height: 40px; color: var(--muted); }
+.queue-row__title { overflow: hidden; }
+@media (max-width: 370px) {
+  .queue-tools { gap: 5px; }
+  .queue-tools button { font-size: .69rem; }
+  .queue-reorder .icon-button { width: 27px; }
+  .search-track-actions button { padding-inline: 8px; }
+}
