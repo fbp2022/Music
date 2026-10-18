@@ -4,7 +4,7 @@ An iPhone-first family music web app, being developed as an installable PWA. The
 
 ## Project status
 
-**Phase 1: interactive frontend prototype.** It uses clearly marked demo content and local browser settings. Playback controls demonstrate the intended UI, but **there is no active audio stream, login, upload endpoint, or live Navidrome connection yet**. Nothing in the demo purchases music or sends a file to a server.
+**Phase 1: interactive frontend prototype.** It uses clearly marked demo content and local browser settings. **Internet radio uses actual browser audio playback** through the public Radio Browser directory. Demo songs still have no audio stream; there is no family login, music upload endpoint, or live Navidrome connection yet. Nothing in the demo purchases music or sends a file to a server.
 
 ## Run locally
 
@@ -57,3 +57,17 @@ src/
 6. Implement actual PWA service worker and an iOS-specific offline test plan. The demo is responsive but does not claim verified offline audio support.
 
 No licensed recordings, passwords, tokens, or account data belong in this repository.
+
+
+## Live radio (frontend-only first version)
+
+Open **Radio** on the deployed app. The initial directory is **All genres**, not a Christian-radio-only list. Explore rock, pop, country, Christian, gospel, jazz, classical, news, talk, sports, electronic, hip-hop and international stations. Search by station name, filter by country, sort by popularity/name/bitrate, save favorites, or add your own station using its direct HTTPS audio stream URL.
+
+- Public directory: [Radio Browser](https://www.radio-browser.info/), queried directly from the browser with no credentials.
+- Only HTTPS streams are included because HTTP audio may be blocked as mixed content on an HTTPS website.
+- A station listed in the directory is not a guarantee that the stream works or uses a codec Safari supports.
+- The app uses a persistent HTML audio element while navigating between screens and uses the Media Session API where iOS supports it.
+- Favorites and added stations currently persist in **this browser's local storage**; they do not yet sync across family accounts or phones. Account-level persistence will come with the Navidrome/family backend.
+- The app never charges or processes a station subscription; stations are third-party independent streams.
+- Some radio stations have geographic or broadcaster-side restrictions; the app cannot circumvent those.
+- For a first iPhone playback test, open Radio, choose a station, tap it, lock the iPhone, and inspect lock-screen controls. Behavior varies with broadcaster format and Safari/iOS.
