@@ -1,0 +1,23 @@
+@media (min-width: 700px) {
+  .page { padding: 35px 40px 50px; }
+  .continue-grid { grid-template-columns: 300px 220px; }
+  .featured-card { aspect-ratio: 1.2; }
+  .album-grid { grid-template-columns: repeat(4,minmax(0,1fr)); }
+  .album-tile { min-width: 160px; width: 160px; }
+  .quick-grid { grid-template-columns: repeat(3,180px); }
+  .station-shortcuts { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .store-card { max-width: 750px; }
+  .radio-hero { max-width: 560px; }
+  .import-panel { max-width: 690px; }
+  .search-browse { grid-template-columns: repeat(4,minmax(0,1fr)); }
+}
+@media (max-width: 370px) {
+  .page { padding-inline: 14px; }
+  .quick-tile { padding: 10px; min-height: 110px; }
+  .quick-tile strong { font-size: .71rem; }
+  .nav-item { font-size: .59rem; }
+  .station-shortcut img { width: 42px; height: 42px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}

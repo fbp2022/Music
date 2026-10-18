@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#090b11" />
+    <meta name="description" content="Your music. Your people. Your library." />
+    <title>Family Music</title>
+    <script>
+      try {
+        const preference = localStorage.getItem('fm-theme') || 'system';
+        const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = preference === 'system' ? (dark ? 'dark' : 'light') : preference;
+      } catch (_) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
