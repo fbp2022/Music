@@ -122,7 +122,7 @@ export function RadioPage() {
           </select>
         </label>
         <label><span className="sr-only">Sort radio stations</span>
-          <select value={sort} onChange={(e) => setSort(e.target.value)} aria-label="Sort radio stations"
+          <select value={sort} onChange={(e) => { const value = e.target.value; if (value === "votes" || value === "name" || value === "bitrate") setSort(value); }} aria-label="Sort radio stations"
             disabled={category === "Favorites"}>
             <option value="votes">Most popular</option>
             <option value="name">Name A–Z</option>
