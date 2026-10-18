@@ -1,8 +1,10 @@
 import { CircleUserRound, Settings2 } from "lucide-react";
-import { useMusic } from "../state/MusicProvider";
 
-export function PageHeader({ title, subtitle }: { title: string; subtitle?: string }) {
-  const { goTo } = useMusic();
+export function PageHeader({ title, subtitle, onOpenSettings }: {
+  title: string;
+  subtitle?: string;
+  onOpenSettings: () => void;
+}) {
   return (
     <header className="page-header">
       <div>
@@ -10,7 +12,7 @@ export function PageHeader({ title, subtitle }: { title: string; subtitle?: stri
         {subtitle && <p className="page-subtitle">{subtitle}</p>}
       </div>
       <button type="button" className="icon-button profile-button" aria-label="Appearance and settings"
-        onClick={() => goTo("home") || document.dispatchEvent(new Event("fm-open-settings"))}>
+        onClick={onOpenSettings}>
         <CircleUserRound size={26} strokeWidth={1.8} />
       </button>
     </header>
