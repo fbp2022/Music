@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Globe2, Heart, LoaderCircle, Plus, RadioTower, RefreshCw, Search, Trash2, X } from "lucide-react";
 import { CoverArt } from "../../components/CoverArt";
 import { findRadioStations, RADIO_FALLBACK_ART } from "../../services/radioBrowser";
@@ -78,7 +78,7 @@ export function RadioPage() {
     ? favoriteStationRecords.filter((s) => !search.trim() || (s.name + " " + s.genre).toLowerCase().includes(search.trim().toLowerCase()))
     : [...filteredCustom, ...results.filter((s) => !filteredCustom.some((c) => c.streamUrl === s.streamUrl))];
 
-  const addManual = (event: React.FormEvent) => {
+  const addManual = (event: FormEvent) => {
     event.preventDefault();
     setCustomError("");
     try {
