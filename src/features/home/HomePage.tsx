@@ -1,10 +1,11 @@
 import { ChevronRight, Heart, RadioTower } from "lucide-react";
 import { CoverArt } from "../../components/CoverArt";
-import { albums, songs, stations } from "../../data/demo";
+import { albums, songs } from "../../data/demo";
+import { RADIO_FALLBACK_ART } from "../../services/radioBrowser";
 import { useMusic } from "../../state/MusicProvider";
 
 export function HomePage({ onOpenSettings }: { onOpenSettings: () => void }) {
-  const { goTo, playSong, playStation, favoriteSongs } = useMusic();
+  const { goTo, playSong, playStation, favoriteSongs, favoriteStationRecords } = useMusic();
   const featured = songs[0];
   return (
     <div className="page">
@@ -24,9 +25,9 @@ export function HomePage({ onOpenSettings }: { onOpenSettings: () => void }) {
             <CoverArt src={featured.cover} alt="" />
             <span><strong>{featured.title}</strong><small>{featured.artist}</small></span>
           </button>
-          <button type="button" className="featured-card featured-card--radio" onClick={() => { goTo("radio"); playStation("r1"); }}>
+          <button type="button" className="featured-card featured-card--radio" onClick={() => { if (favoriteStationRecords[0]) playStation(favoriteStationRecords[0]); else goTo("radio"); }}>
             <span className="featured-radio-art"><RadioTower size={40}/></span>
-            <span><strong>{stations[0].name}</strong><small>Christian radio</small></span>
+            <span><strong>{favoriteStationRecords[0]?.name ?? "Live Radio"}</strong><small>{favoriteStationRecords[0]?.genre ?? "Explore stations"}</small></span>
           </button>
         </div>
       </section>
@@ -64,12 +65,18 @@ export function HomePage({ onOpenSettings }: { onOpenSettings: () => void }) {
       <section className="page-section">
         <div className="section-title"><h2>Your Stations</h2><button type="button" onClick={() => goTo("radio")}>See All <ChevronRight size={16}/></button></div>
         <div className="station-shortcuts">
-          {stations.slice(0, 2).map((station) => (
-            <button type="button" className="station-shortcut" key={station.id} onClick={() => { goTo("radio"); playStation(station.id); }}>
+          {favoriteStationRecords.slice(0, 2).map((station) => (
+            <button type="button" className="station-shortcut" key={station.id} onClick={() => { goTo("radio"); playStation(station); }}>
               <CoverArt src={station.cover} alt=""/>
               <span><strong>{station.name}</strong><small>{station.genre}</small></span>
             </button>
           ))}
+        {!favoriteStationRecords.length && (
+            <button type="button" className="station-shortcut" onClick={() => goTo("radio")}>
+              <CoverArt src={RADIO_FALLBACK_ART} alt=""/>
+              <span><strong>Discover Radio</strong><small>Browse stations of every genre</small></span>
+            </button>
+          )}
         </div>
       </section>
     </div>
