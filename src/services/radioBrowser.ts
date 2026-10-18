@@ -6,7 +6,7 @@ const MIRRORS = [
   "https://nl1.api.radio-browser.info",
   "https://at1.api.radio-browser.info",
 ];
-export const RADIO_FALLBACK_ART = "/Music/radio.svg";
+export const RADIO_FALLBACK_ART = import.meta.env.BASE_URL + "radio.svg";
 
 interface RadioBrowserStation {
   stationuuid: string;
@@ -108,7 +108,7 @@ export async function findRadioStations(filters: RadioFilters, signal?: AbortSig
 export function reportStationListen(id: string) {
   // Radio Browser asks apps to count station clicks. Never block playback on this.
   if (!/^[0-9a-f-]{20,}$/i.test(id)) return;
-  void fetch(MIRRORS[0] + "/json/url/" + encodeURIComponent(id), { mode: "cors" }).catch(() => undefined);
+  void fetch(MIRRORS[0] + "/json/url/" + encodeURIComponent(id), { method: "POST", mode: "cors" }).catch(() => undefined);
 }
 
 export function stationFromManualEntry(name: string, streamUrl: string, genre: string): Station {
