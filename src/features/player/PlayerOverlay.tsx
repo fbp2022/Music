@@ -1,4 +1,4 @@
-import { Heart, ListMusic, Pause, Play, SkipBack, SkipForward, X } from "lucide-react";
+import { ArrowDown, ArrowUp, Heart, ListMusic, Pause, Play, RotateCcw, SkipBack, SkipForward, Trash2, X } from "lucide-react";
 import { CoverArt } from "../../components/CoverArt";
 import { songs } from "../../data/demo";
 import { useMusic } from "../../state/MusicProvider";
@@ -6,14 +6,21 @@ import { timeLabel } from "../../utils/time";
 
 export function PlayerOverlay() {
   const { playerOpen, setPlayerOpen, song, station, playing, togglePlayback, next, previous,
-    queue, favoriteSongs, toggleFavoriteSong, removeFromQueue, playSong } = useMusic();
+    queue, favoriteSongs, toggleFavoriteSong, moveInQueue, clearUpNext, canUndoQueue,
+    undoQueue, playSong } = useMusic();
   if (!playerOpen) return null;
+
   const item = song ?? station;
+  const currentIndex = song ? queue.indexOf(song.id) : -1;
+  const upcoming = song ? queue.slice(currentIndex + 1) : [];
+
   return (
     <div className="player-overlay" role="dialog" aria-modal="true" aria-labelledby="player-title">
       <div className="player-overlay__inner">
         <header className="player-overlay__header">
-          <button type="button" className="icon-button" onClick={() => setPlayerOpen(false)} aria-label="Close player"><X size={25}/></button>
+          <button type="button" className="icon-button" onClick={() => setPlayerOpen(false)} aria-label="Close player">
+            <X size={25}/>
+          </button>
           <span className="overline">NOW PLAYING</span>
           <span className="header-spacer" />
         </header>
@@ -37,20 +44,36 @@ export function PlayerOverlay() {
           </button>
           <button type="button" onClick={next} disabled={!song} aria-label="Next track"><SkipForward size={32} fill="currentColor"/></button>
         </div>
-        <div className="prototype-message">UI preview only — audio playback will work after Navidrome is connected.</div>
+        <div className="prototype-message">Audio preview controls only — Navidrome streaming is not connected yet.</div>
         {song && (
           <section className="up-next">
-            <h3><ListMusic size={18}/> Up Next</h3>
-            {queue.filter((id) => id !== song.id).slice(0, 6).map((id, idx) => {
+            <div className="up-next-header">
+              <h3><ListMusic size={18}/> Up Next <small>{upcoming.length}</small></h3>
+              <div className="queue-tools">
+                {canUndoQueue && <button type="button" onClick={undoQueue} aria-label="Undo last queue change"><RotateCcw size={17}/> Undo</button>}
+                <button type="button" disabled={upcoming.length === 0} onClick={clearUpNext} aria-label="Clear upcoming songs">
+                  <Trash2 size={17}/> Clear
+                </button>
+              </div>
+            </div>
+            {upcoming.length === 0 && <p className="empty-state">Nothing else queued. Search for a song and choose Play Next or Play Later.</p>}
+            {upcoming.map((id, idx) => {
               const entry = songs.find((s) => s.id === id);
               if (!entry) return null;
               return (
-                <div className="queue-row" key={id + "-" + idx}>
+                <div className="queue-row" key={id}>
                   <button type="button" className="queue-row__title" onClick={() => playSong(id)}>
                     <CoverArt src={entry.cover} alt=""/>
                     <span><strong>{entry.title}</strong><small>{entry.artist}</small></span>
                   </button>
-                  <button type="button" className="icon-button" onClick={() => removeFromQueue(id)} aria-label={"Remove " + entry.title + " from queue"}><X size={17}/></button>
+                  <div className="queue-reorder">
+                    <button type="button" className="icon-button" onClick={() => moveInQueue(id, -1)} disabled={idx === 0} aria-label={"Move " + entry.title + " earlier"}>
+                      <ArrowUp size={18}/>
+                    </button>
+                    <button type="button" className="icon-button" onClick={() => moveInQueue(id, 1)} disabled={idx === upcoming.length - 1} aria-label={"Move " + entry.title + " later"}>
+                      <ArrowDown size={18}/>
+                    </button>
+                  </div>
                 </div>
               );
             })}
