@@ -25,7 +25,7 @@ function MusicAppShell() {
         {settingsOpen ? <SettingsPage onClose={() => setSettingsOpen(false)}/> : (
           <>
             {tab === "home" && <HomePage onOpenSettings={() => setSettingsOpen(true)}/>}
-            {tab === "library" && <LibraryPage onOpenSettings={() => setSettingsOpen(true)}/>}
+            {tab === "library" && <LibraryPage/>}
             {tab === "radio" && <RadioPage/>}
             {tab === "get-music" && <GetMusicPage/>}
             {tab === "search" && <SearchPage/>}
