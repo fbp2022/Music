@@ -151,13 +151,15 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     audio.pause();
     audio.src = selection.streamUrl;
     audio.load();
-    if ("mediaSession" in navigator) {
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: selection.name,
-        artist: "Live radio",
-        album: selection.country || "Internet radio",
-        artwork: selection.cover.startsWith("https://") ? [{ src: selection.cover }] : [],
-      });
+    if ("mediaSession" in navigator && typeof MediaMetadata !== "undefined") {
+      try {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: selection.name,
+          artist: "Live radio",
+          album: selection.country || "Internet radio",
+          artwork: selection.cover.startsWith("https://") ? [{ src: selection.cover }] : [],
+        });
+      } catch { /* Metadata is optional and must never prevent playback. */ }
     }
     // Call play() during the originating tap/click (important on iOS).
     void audio.play().catch(() => {
