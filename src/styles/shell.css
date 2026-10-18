@@ -18,7 +18,16 @@
 .nav-item.active { color: var(--accent); font-weight: 700; }
 .mini-player { display: flex; align-items: center; min-height: 66px; background: var(--surface-high); border-radius: 13px; margin: 8px 9px 2px; padding: 5px 9px; box-shadow: var(--shadow); }
 .mini-player__details { background: transparent; color: var(--text); display: flex; align-items: center; text-align: left; flex: 1; min-width: 0; gap: 10px; padding: 0; }
-.mini-player__art { width: 51px; height: 51px; }
+.mini-player .mini-player__art { width: 50px; min-width: 50px; height: 50px; flex: 0 0 50px; aspect-ratio: 1; object-fit: cover; border-radius: 8px; }
+.mini-player__details { overflow: hidden; }
+.mini-player__text { flex: 1 1 auto; min-width: 0; }
+.mini-player__controls { flex: 0 0 auto; }
+@media (max-width: 370px) {
+  .mini-player .mini-player__art { width: 44px; min-width: 44px; height: 44px; flex-basis: 44px; }
+  .mini-player { padding-inline: 7px; }
+  .mini-player__details { gap: 7px; }
+  .mini-player__controls .icon-button { width: 35px; }
+}
 .mini-player__text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .mini-player__text strong, .mini-player__text small { text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
 .mini-player__text strong { font-size: .9rem; }
