@@ -21,7 +21,6 @@ function MusicAppShell() {
 
   return (
     <div className="app-shell">
-      <div className="prototype-ribbon">INTERACTIVE UI PREVIEW · NOT CONNECTED TO A MUSIC SERVER</div>
       <main className="page-scroll" id="main-content">
         {settingsOpen ? <SettingsPage onClose={() => setSettingsOpen(false)}/> : (
           <>
