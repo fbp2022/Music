@@ -30,12 +30,7 @@ export const songs: Song[] = [
   { id: "s7", title: "One Voice", artist: "Gathered Voices", album: "Live Together", albumId: "a6", genre: "Gospel", year: 2024, duration: 278, cover: art.stage, source: "CD" },
 ];
 
-export const stations: Station[] = [
-  { id: "r1", name: "K-LOVE", genre: "Christian", description: "Contemporary Christian music", cover: art.sunrise, website: "https://www.klove.com/" },
-  { id: "r2", name: "Air1", genre: "Worship", description: "Worship music and encouragement", cover: art.stage, website: "https://www.air1.com/" },
-  { id: "r3", name: "Gospel Favorites", genre: "Gospel", description: "Demo station · stream not configured", cover: art.hills, website: "" },
-  { id: "r4", name: "Faith & Conversation", genre: "Talk", description: "Demo station · stream not configured", cover: art.forest, website: "" },
-];
+export const stations: Station[] = [];
 
 export const stores: Store[] = [
   { id: "qobuz", name: "Qobuz", category: "Mainstream & lossless", details: "Albums, singles, FLAC and high-resolution downloads", link: "https://www.qobuz.com/us-en/shop" },
