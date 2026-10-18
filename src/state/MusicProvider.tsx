@@ -21,8 +21,12 @@ interface MusicState {
   next: () => void;
   previous: () => void;
   queue: string[];
-  addToQueue: (id: string) => void;
-  removeFromQueue: (id: string) => void;
+  playNext: (id: string) => void;
+  playLater: (id: string) => void;
+  moveInQueue: (id: string, direction: -1 | 1) => void;
+  clearUpNext: () => void;
+  canUndoQueue: boolean;
+  undoQueue: () => void;
   favoriteSongs: string[];
   favoriteStations: string[];
   toggleFavoriteSong: (id: string) => void;
@@ -50,13 +54,21 @@ function rememberAppearance(): Appearance {
   }
 }
 
+const knownSongIds = new Set(songs.map((s) => s.id));
+function rememberQueue() {
+  const ids = rememberList("fm-demo-queue", songs.map((s) => s.id));
+  const valid = [...new Set(ids.filter((id) => knownSongIds.has(id)))];
+  return valid.length ? valid : songs.map((s) => s.id);
+}
+
 export function MusicProvider({ children }: { children: ReactNode }) {
   const [tab, setTab] = useState<Tab>("home");
   const [appearance, setAppearance] = useState<Appearance>(rememberAppearance);
   const [current, setCurrent] = useState<Current | null>({ kind: "song", id: "s1" });
   const [playing, setPlaying] = useState(false);
   const [playerOpen, setPlayerOpen] = useState(false);
-  const [queue, setQueue] = useState<string[]>(songs.map((song) => song.id));
+  const [queue, setQueue] = useState<string[]>(rememberQueue);
+  const [previousQueue, setPreviousQueue] = useState<string[] | null>(null);
   const [favoriteSongs, setFavoriteSongs] = useState<string[]>(() => rememberList("fm-song-favorites", ["s1"]));
   const [favoriteStations, setFavoriteStations] = useState<string[]>(() => rememberList("fm-station-favorites", ["r1"]));
 
@@ -76,21 +88,23 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     try {
       localStorage.setItem("fm-song-favorites", JSON.stringify(favoriteSongs));
       localStorage.setItem("fm-station-favorites", JSON.stringify(favoriteStations));
+      localStorage.setItem("fm-demo-queue", JSON.stringify(queue));
     } catch { /* optional storage */ }
-  }, [favoriteSongs, favoriteStations]);
+  }, [favoriteSongs, favoriteStations, queue]);
 
   const song = current?.kind === "song" ? songs.find((s) => s.id === current.id) ?? null : null;
   const station = current?.kind === "station" ? stations.find((s) => s.id === current.id) ?? null : null;
 
   const playSong = (id: string) => {
-    if (!songs.some((s) => s.id === id)) return;
+    if (!knownSongIds.has(id)) return;
     setCurrent({ kind: "song", id });
-    setPlaying(false); // UI preview only: no audio engine is connected.
+    setQueue((prev) => prev.includes(id) ? prev : [id, ...prev]);
+    setPlaying(false); // No audio element until Navidrome is connected.
   };
   const playStation = (id: string) => {
     if (!stations.some((s) => s.id === id)) return;
     setCurrent({ kind: "station", id });
-    setPlaying(false); // UI preview only: no audio engine is connected.
+    setPlaying(false); // Radio streams not connected yet.
   };
   const cycle = (direction: number) => {
     if (!song) return;
@@ -99,7 +113,39 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     const nextIndex = (index + direction + queue.length) % queue.length;
     playSong(queue[nextIndex]);
   };
-  const togglePlayback = () => setPlaying((value) => !value); // visual prototype state, not real audio
+  const togglePlayback = () => setPlaying((value) => !value); // Visual preview only.
+
+  const changeQueue = (next: string[]) => {
+    if (next.join("|") === queue.join("|")) return;
+    setPreviousQueue(queue);
+    setQueue(next);
+  };
+  const playNext = (id: string) => {
+    if (!knownSongIds.has(id) || song?.id === id) return;
+    const remaining = queue.filter((queued) => queued !== id);
+    const currentPosition = song ? remaining.indexOf(song.id) : -1;
+    remaining.splice(currentPosition + 1, 0, id);
+    changeQueue(remaining);
+  };
+  const playLater = (id: string) => {
+    if (!knownSongIds.has(id) || song?.id === id) return;
+    changeQueue([...queue.filter((queued) => queued !== id), id]);
+  };
+  const moveInQueue = (id: string, direction: -1 | 1) => {
+    if (id === song?.id) return;
+    const currentIndex = queue.indexOf(id);
+    const destination = currentIndex + direction;
+    if (currentIndex < 0 || destination < 0 || destination >= queue.length || queue[destination] === song?.id) return;
+    const nextQueue = [...queue];
+    [nextQueue[currentIndex], nextQueue[destination]] = [nextQueue[destination], nextQueue[currentIndex]];
+    changeQueue(nextQueue);
+  };
+  const clearUpNext = () => changeQueue(song ? [song.id] : []);
+  const undoQueue = () => {
+    if (previousQueue === null) return;
+    setQueue(previousQueue);
+    setPreviousQueue(null);
+  };
   const toggleFavoriteSong = (id: string) => setFavoriteSongs((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]);
   const toggleFavoriteStation = (id: string) => setFavoriteStations((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]);
 
@@ -108,10 +154,10 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     current, song, station, playing, playerOpen, setPlayerOpen,
     playSong, playStation, togglePlayback,
     next: () => cycle(1), previous: () => cycle(-1),
-    queue, addToQueue: (id) => setQueue((old) => [...old, id]),
-    removeFromQueue: (id) => setQueue((old) => old.filter((songId) => songId !== id)),
+    queue, playNext, playLater, moveInQueue, clearUpNext,
+    canUndoQueue: previousQueue !== null, undoQueue,
     favoriteSongs, favoriteStations, toggleFavoriteSong, toggleFavoriteStation,
-  }), [tab, appearance, current, song, station, playing, playerOpen, queue, favoriteSongs, favoriteStations]);
+  }), [tab, appearance, current, song, station, playing, playerOpen, queue, previousQueue, favoriteSongs, favoriteStations]);
 
   return <MusicContext.Provider value={value}>{children}</MusicContext.Provider>;
 }
